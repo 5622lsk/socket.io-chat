@@ -25,15 +25,30 @@ function onSocketMessage(message){
 const sockets = []; //연결된 브라우저를 넣는 데이터베이스
 
 wss.on("connection",(socket) => {  //여기서의 socket은 연결된 브라우저를 뜻함.
-    sockets.push(socket); 
+    sockets.push(socket);//소켓 연결
+    socket["nickname"] = "익명";//닉넴 안정한 사람 = "익명"으로 정함.
     console.log("Connected to Browser");
     socket.on("close", onSocketClose);
-    socket.on("message", (message) => {
-        const messageString = message.toString('utf8');
-        socket.send(messageString);
-        sockets.forEach((aSocket) => aSocket.send(message));
+    socket.on("message", (msg) => {
+        const message = JSON.parse(msg);
+        switch(message.type){
+            case "new_message":
+                sockets.forEach((aSocket) => 
+                    aSocket.send(`${socket.nickname}: ${message.payload}`)//문자열표현
+                )
+            case "nickname": //닉네임 정했을때
+                socket["nickname"] = message.payload;
+        }
     });
 });
   //socket이 프론트와 실시간으로 소통할 수 있음
-
 server.listen(3000, handleListen);
+
+{
+    type:"message";
+    payload:"hello everyone!";
+}
+{
+    type:"nickname";
+    payload:"nico";
+}

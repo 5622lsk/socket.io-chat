@@ -1,11 +1,18 @@
 const messageList = document.querySelector("ul");
-const messageForm = document.querySelector("form");
+const nickForm = document.querySelector("#nick");
+const messageForm = document.querySelector("#message");
 const socket = new WebSocket(`ws://${window.location.host}`);
 //여기서의 socket은 서버로의 연결을 뜻함.
+
+function makeMessage(type, payload){
+    const msg = {type, payload}; //object 만들기
+    return JSON.stringify(msg); //object자료를 string으로 변환
+}
 
 function handleOpen(){
     console.log("Connected to Server");    
 }
+
 socket.addEventListener("open", handleOpen);
 
 socket.addEventListener("message", (message) => {
@@ -21,7 +28,16 @@ socket.addEventListener("close", () => {
 function handleSubmit(event){
     event.preventDefault();
     const input = messageForm.querySelector("input");
-    socket.send(input.value);
+    socket.send(makeMessage("new_message", input.value));
     input.value = "";
 }
-messageForm.addEventListener("submit", handleSubmit); 
+
+function handleNickSubmit(event){
+    event.preventDefault();
+    const input = nickForm.querySelector("input");
+    socket.send(makeMessage("nickname",input.value));
+    input.value = "";
+
+}
+messageForm.addEventListener("submit", handleSubmit);
+nickForm.addEventListener("submit", handleNickSubmit);
