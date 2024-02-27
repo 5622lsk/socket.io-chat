@@ -1,5 +1,5 @@
 import http from "http";
-import WebSocket from "ws";
+import { Server } from 'socket.io';
 import express from "express";
 
 const app = express();
@@ -10,10 +10,14 @@ app.use("/public", express.static(__dirname + "/public"));
 app.get("/", (_, res) => res.render("home"));
 app.get("/*", (_, res) => res.redirect("/"));
 
-const handleListen = () => console.log( `Listening on http://localhost:3000`);
 
-const server = http.createServer(app);
-const wss = new WebSocket.Server({server});
+const httpServer = http.createServer(app); //1.http서버를 만든다.
+const wsServer = new Server(httpServer);//2.새로운 웹소켓을 쌓아올리며 만든다.
+
+
+
+
+/* const wss = new WebSocket.Server({server});//2.새로운 웹소켓을 쌓아올리며 만든다.
 
 function onSocketClose(){
     console.log("Disconnected from the Browser");
@@ -35,20 +39,12 @@ wss.on("connection",(socket) => {  //여기서의 socket은 연결된 브라우�
             case "new_message":
                 sockets.forEach((aSocket) => 
                     aSocket.send(`${socket.nickname}: ${message.payload}`)//문자열표현
-                )
+                );
             case "nickname": //닉네임 정했을때
                 socket["nickname"] = message.payload;
         }
     });
-});
-  //socket이 프론트와 실시간으로 소통할 수 있음
-server.listen(3000, handleListen);
+}); */
 
-{
-    type:"message";
-    payload:"hello everyone!";
-}
-{
-    type:"nickname";
-    payload:"nico";
-}
+const handleListen = () => console.log( `Listening on http://localhost:3000`);
+httpServer.listen(3000, handleListen);

@@ -29,7 +29,10 @@ function handleSubmit(event){
     event.preventDefault();
     const input = messageForm.querySelector("input");
     socket.send(makeMessage("new_message", input.value));
-    input.value = "";
+    const li = document.createElement("li"); //메시지를 받으면 새로운 li생성
+    li.innerText = `You: ${input.value}`;
+    messageList.append(li);
+    input.value = ""; //값을 보내준 후 창 비우기
 }
 
 function handleNickSubmit(event){
