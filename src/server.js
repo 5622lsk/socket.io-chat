@@ -14,6 +14,27 @@ app.get("/*", (_, res) => res.redirect("/"));
 const httpServer = http.createServer(app); //1.http서버를 만든다.
 const wsServer = new Server(httpServer);//2.새로운 웹소켓을 쌓아올리며 만든다.
 
+wsServer.on("connection", (socket) => {
+    socket["nickname"] = "Anon"
+    socket.onAny((event) => {
+        console.log(`Socket Event:${event}`);
+    });
+    socket.on("enter_room", (roomName, done) => { 
+        socket.join(roomName);
+        done();
+        socket.to(roomName).emit("welcome", socket.nickname);
+    });
+    socket.on("disconnecting", () => {
+        socket.rooms.forEach(room => socket.to(room).emit("bye", socket.nickname));
+    });
+    socket.on("new_message", (msg, room, done) => {
+        socket.to(room).emit("new_message", `${socket.nickname}: ${msg}`);
+        done();
+    });
+    //nickname event가 발생하면 nickname을 가져와서 socket에 저장함.
+    socket.on("nickname", nickname => {socket["nickname"] = nickname});
+});
+
 
 
 
