@@ -1,6 +1,8 @@
 import http from "http";
 import { Server } from 'socket.io';
 import express from "express";
+import {instrument} from "@socket.io/admin-ui";
+
 
 const app = express();
 
@@ -12,7 +14,18 @@ app.get("/*", (_, res) => res.redirect("/"));
 
 
 const httpServer = http.createServer(app); //1.http서버를 만든다.
-const wsServer = new Server(httpServer);//2.새로운 웹소켓을 쌓아올리며 만든다.
+const wsServer = new Server(httpServer, {  //2.새로운 웹소켓을 쌓아올리며 만든다.
+    cors: {
+      origin: ["https://admin.socket.io"],
+      credentials: true
+    }
+});
+
+instrument(wsServer, {
+    auth: false,
+    mode: "development",
+  });
+
 
 //wsServer.socket.adapter로 부터 sids와 rooms를 가져와서 코드 실행
 //sids:개인방, rooms:개인방,공개방
