@@ -17,6 +17,7 @@ npm i socket.io 클라이언트에도 설치 script(src="/so
 wsServer.on("connection", (socket) => {  
     console.log(socket);
 });
+
 클라이언트(브라우저)에서 socket 설치 후에는 io function 사용가능
 const socket = io();
 io 함수는 알아서 socket.io 를 실행하고 있는 서버를 찾는다.
@@ -26,6 +27,7 @@ io 함수는 알아서 socket.io 를 실행하고 있는 서버를 찾는다.
   socket.emit("enter_room", { payload: input.value }, () => {
     console.log("server is done!");
   });
+  
 4: 서버측 : 10초후에 클라이언트측의 함수를 호출한다.
 
 socket.on("enter_room", (msg, done) => {
