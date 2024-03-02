@@ -1,6 +1,5 @@
-# Noom
-
-Zoom Clone using NodeJS, WebRTC and Websockets.
+# chat
+chat using NodeJS, WebRTC and Websockets.
 >npm init -y  
 >npm i nodemon -D
 >npm i @babel/core -D
