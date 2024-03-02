@@ -18,7 +18,7 @@ https://socket.io/docs/v4/
 서버에 설치.
 >npm i socket.io 
 클라이언트에도 설치
->script(src="/so
+>script(src="/socket.io/socket.io.js")
 
 1. 서버측 : 커넥션을 받을 준비
 ```
